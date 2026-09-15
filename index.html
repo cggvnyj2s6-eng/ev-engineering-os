@@ -1,0 +1,1679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#050608">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="EV Engineering OS">
+<link rel="manifest" href="manifest.json">
+<title>EV Engineering OS</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+background:#050608;color:#fff
+}
+
+button{font:inherit;cursor:pointer;border:0;color:#fff}
+
+/* LOGIN */
+#loginScreen{
+position:fixed;
+inset:0;
+z-index:9999;
+background:#050608;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px
+}
+
+.loginBox{
+width:100%;
+max-width:390px;
+background:#0d0f12;
+border:1px solid #25282d;
+border-radius:22px;
+padding:32px 25px;
+box-shadow:0 25px 80px #000;
+text-align:center
+}
+
+.loginLogo{
+font-size:24px;
+font-weight:700;
+letter-spacing:1px;
+margin-bottom:8px
+}
+
+.loginLogo b{color:#e82127}
+
+.loginSub{
+color:#777;
+font-size:12px;
+margin-bottom:28px
+}
+
+.loginBox input{
+width:100%;
+height:50px;
+margin-bottom:12px;
+padding:0 15px;
+border-radius:10px;
+border:1px solid #30343a;
+background:#15181c;
+color:#fff;
+outline:none;
+font-size:14px
+}
+
+.loginBox input:focus{
+border-color:#fff
+}
+
+.loginBtn{
+width:100%;
+height:50px;
+border-radius:10px;
+background:#fff;
+color:#000;
+font-weight:700;
+margin-top:5px
+}
+
+.loginError{
+height:20px;
+margin-top:12px;
+font-size:12px;
+color:#ff4b50
+}
+
+/* APP */
+.app{
+min-height:100vh;
+padding-bottom:80px
+}
+
+.top{
+height:68px;
+background:#090a0d;
+border-bottom:1px solid #22252a;
+padding:0 24px;
+display:flex;
+align-items:center;
+justify-content:space-between;
+position:sticky;
+top:0;
+z-index:20
+}
+
+.logo{
+font-size:20px;
+font-weight:700;
+letter-spacing:1px
+}
+
+.logo b{color:#e82127}
+
+.online{
+font-size:12px;
+color:#aaa;
+display:flex;
+gap:8px;
+align-items:center
+}
+
+.dot{
+width:8px;
+height:8px;
+border-radius:50%;
+background:#39d66c;
+box-shadow:0 0 12px #39d66c
+}
+
+.logout{
+background:#191c20;
+border:1px solid #30343a;
+padding:7px 11px;
+border-radius:8px;
+font-size:10px;
+margin-left:12px
+}
+
+.grid{
+max-width:1500px;
+margin:auto;
+padding:18px;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:16px
+}
+
+.card{
+background:#0d0f12;
+border:1px solid #202328;
+border-radius:17px;
+padding:18px;
+box-shadow:0 10px 30px #0005
+}
+
+.card h2{
+font-size:14px;
+color:#ddd;
+margin-bottom:15px
+}
+
+.hero{
+grid-column:span 2;
+grid-row:span 2;
+min-height:480px;
+position:relative;
+overflow:hidden
+}
+
+.speed{
+position:absolute;
+z-index:5
+}
+
+.speed strong{
+font-size:58px;
+font-weight:300
+}
+
+.speed span{color:#777}
+
+.stage{
+height:360px;
+position:relative;
+display:flex;
+align-items:center;
+justify-content:center
+}
+
+.road{
+position:absolute;
+bottom:20px;
+width:100%;
+height:120px;
+background:#15171a;
+border-top:2px solid #292c31;
+border-bottom:2px solid #292c31;
+overflow:hidden
+}
+
+.road:after{
+content:"";
+position:absolute;
+top:56px;
+width:100%;
+height:4px;
+background:repeating-linear-gradient(90deg,#777 0 65px,transparent 65px 125px);
+animation:move .55s linear infinite
+}
+
+@keyframes move{
+to{transform:translateX(-125px)}
+}
+
+.car{
+width:290px;
+height:105px;
+background:linear-gradient(#343940,#101215);
+border:2px solid #555;
+border-radius:70px 90px 27px 27px;
+position:relative;
+z-index:3;
+transition:.15s;
+box-shadow:0 22px 35px #000
+}
+
+.car:before{
+content:"";
+position:absolute;
+width:155px;
+height:58px;
+left:67px;
+top:-39px;
+background:#111820;
+border:2px solid #444;
+border-bottom:0;
+border-radius:90px 90px 8px 8px
+}
+
+.car:after{
+content:"";
+position:absolute;
+width:43px;
+height:20px;
+right:18px;
+top:30px;
+background:#e82127;
+border-radius:10px;
+box-shadow:0 0 16px #e82127
+}
+
+.wheel{
+position:absolute;
+bottom:-25px;
+width:55px;
+height:55px;
+border-radius:50%;
+background:#050607;
+border:7px solid #34383e
+}
+
+.w1{left:45px}
+.w2{right:45px}
+
+.modes{
+position:absolute;
+bottom:16px;
+left:18px;
+display:flex;
+gap:6px
+}
+
+.mode{
+padding:8px 14px;
+border-radius:20px;
+background:#191c20;
+border:1px solid #30343a;
+font-size:11px
+}
+
+.mode.active{
+background:#fff;
+color:#000
+}
+
+.controls{
+position:absolute;
+bottom:16px;
+right:18px;
+display:flex;
+gap:6px
+}
+
+.ctrl{
+background:#191c20;
+border:1px solid #30343a;
+padding:8px 12px;
+border-radius:9px;
+font-size:11px
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:9px
+}
+
+.stat{
+background:#15181c;
+padding:12px;
+border-radius:11px
+}
+
+.stat label{
+display:block;
+color:#777;
+font-size:10px;
+margin-bottom:5px
+}
+
+.stat strong{
+font-size:19px;
+font-weight:500
+}
+
+.green{color:#39d66c}
+.red{color:#ff4b50}
+.blue{color:#52a9ff}
+.yellow{color:#ffc84a}
+
+.bar{
+height:7px;
+background:#22252a;
+border-radius:10px;
+overflow:hidden;
+margin-top:10px
+}
+
+.bar i{
+display:block;
+height:100%;
+width:50%;
+background:#39d66c;
+border-radius:10px
+}
+
+.full{grid-column:span 2}
+.wide{grid-column:span 2}
+
+.rows{
+display:grid;
+gap:5px
+}
+
+.row{
+display:flex;
+justify-content:space-between;
+padding:9px 0;
+border-bottom:1px solid #202328;
+font-size:12px;
+color:#aaa
+}
+
+.row:last-child{border:0}
+
+.cells{
+display:grid;
+grid-template-columns:repeat(8,1fr);
+gap:4px;
+margin-top:10px
+}
+
+.cell{
+height:22px;
+border-radius:4px;
+background:#299354
+}
+
+.cell.w{background:#b18a2d}
+.cell.b{background:#c43f45}
+
+.thermal{
+display:grid;
+gap:13px
+}
+
+.temp{
+display:flex;
+justify-content:space-between;
+font-size:12px;
+color:#aaa
+}
+
+.tempbar{
+height:5px;
+background:#222;
+margin-top:6px;
+border-radius:5px
+}
+
+.tempbar i{
+display:block;
+height:100%;
+border-radius:5px;
+background:#52a9ff
+}
+
+.ai{
+height:210px;
+background:#080a0d;
+border-radius:11px;
+position:relative;
+overflow:hidden
+}
+
+.airoad{
+position:absolute;
+left:28%;
+width:44%;
+height:100%;
+background:#202329;
+clip-path:polygon(35% 0,65% 0,100% 100%,0 100%)
+}
+
+.lane{
+height:100%;
+position:absolute;
+border-left:2px dashed #777
+}
+
+.la{left:40%}
+.lb{left:60%}
+
+.obj{
+position:absolute;
+width:42px;
+height:60px;
+left:48%;
+bottom:50px;
+background:#e82127;
+border-radius:7px;
+box-shadow:0 0 15px #e8212766
+}
+
+.aiinfo{
+position:absolute;
+z-index:3;
+top:10px;
+left:10px;
+font-size:10px;
+color:#aaa
+}
+
+.toggleline{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+font-size:12px
+}
+
+.toggle{
+width:47px;
+height:25px;
+border-radius:20px;
+background:#333;
+padding:3px
+}
+
+.toggle i{
+display:block;
+width:19px;
+height:19px;
+background:#999;
+border-radius:50%;
+transition:.2s
+}
+
+.toggle.on{background:#39a65d}
+
+.toggle.on i{
+transform:translateX(21px);
+background:#fff
+}
+
+.map{
+height:175px;
+border-radius:11px;
+background:#101317;
+position:relative;
+overflow:hidden
+}
+
+.map:before{
+content:"";
+position:absolute;
+width:150%;
+height:5px;
+top:90px;
+left:-20%;
+background:#555;
+transform:rotate(-10deg)
+}
+
+.route{
+position:absolute;
+width:150%;
+height:4px;
+top:84px;
+left:-20%;
+background:#4aa7ff;
+transform:rotate(-10deg);
+box-shadow:0 0 10px #4aa7ff
+}
+
+.pin{
+position:absolute;
+left:50%;
+top:79px;
+width:13px;
+height:13px;
+border:3px solid #4aa7ff;
+background:#fff;
+border-radius:50%
+}
+
+.graph{
+height:230px;
+width:100%;
+background:#080a0d;
+border-radius:10px
+}
+
+.testbtn{
+width:100%;
+background:#fff;
+color:#000;
+padding:12px;
+border-radius:9px;
+margin-top:12px;
+font-weight:600;
+font-size:12px
+}
+
+.security button{
+width:100%;
+padding:9px;
+border-radius:8px;
+background:#191c20;
+margin-top:7px;
+border:1px solid #30343a;
+text-align:left
+}
+
+.signal{
+display:flex;
+align-items:center;
+gap:14px
+}
+
+.light{
+width:28px;
+height:78px;
+background:#17191c;
+border-radius:15px;
+padding:5px;
+display:grid;
+gap:4px
+}
+
+.light i{
+border-radius:50%;
+background:#333
+}
+
+.light i.red.on{
+background:#ff3d45;
+box-shadow:0 0 12px #ff3d45
+}
+
+.light i.yellow.on{
+background:#ffc53d;
+box-shadow:0 0 12px #ffc53d
+}
+
+.light i.green.on{
+background:#39d66c;
+box-shadow:0 0 12px #39d66c
+}
+
+.footer{
+text-align:center;
+color:#555;
+font-size:10px;
+padding:10px
+}
+
+.bottom{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+height:68px;
+background:#090a0c;
+border-top:1px solid #222;
+display:flex;
+justify-content:center;
+gap:45px;
+align-items:center;
+z-index:30
+}
+
+.bottom button{
+background:none;
+color:#777;
+font-size:10px
+}
+
+.bottom button:first-child{color:#fff}
+
+@media(max-width:1100px){
+.grid{grid-template-columns:repeat(2,1fr)}
+.hero,.wide{grid-column:span 2}
+}
+
+@media(max-width:650px){
+.grid{display:block;padding:10px}
+.card{margin-bottom:10px}
+.hero{min-height:440px}
+.stage{height:325px}
+.car{transform:scale(.78)}
+.controls{
+position:static;
+margin-top:10px
+}
+.modes{
+position:static;
+margin-top:10px
+}
+.bottom{gap:25px}
+.top{padding:0 14px}
+.logo{font-size:16px}
+.online{font-size:9px}
+.logout{font-size:9px;padding:6px 8px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+<div class="loginBox">
+
+<div class="loginLogo">
+EV<b>ENGINEERING</b> OS
+</div>
+
+<div class="loginSub">
+Secure Vehicle Engineering Dashboard
+</div>
+
+<input id="loginName" type="text" placeholder="Name" autocomplete="username">
+
+<input id="loginPassword" type="password" placeholder="Password" autocomplete="current-password">
+
+<button class="loginBtn" onclick="login()">LOGIN</button>
+
+<div class="loginError" id="loginError"></div>
+
+</div>
+</div>
+
+
+<div class="app" id="mainApp" style="display:none">
+
+<header class="top">
+
+<div class="logo">
+EV<b>ENGINEERING</b> OS
+</div>
+
+<div style="display:flex;align-items:center">
+<div class="online">
+<i class="dot"></i>
+SYSTEM ONLINE
+</div>
+
+<button class="logout" onclick="logout()">LOGOUT</button>
+</div>
+
+</header>
+
+
+<main class="grid">
+
+<section class="card hero">
+
+<div class="speed">
+<strong id="speed">0</strong>
+<span>km/h</span>
+</div>
+
+<div class="stage">
+
+<div class="road"></div>
+
+<div class="car" id="car">
+<div class="wheel w1"></div>
+<div class="wheel w2"></div>
+</div>
+
+</div>
+
+<div class="modes">
+<button class="mode active" onclick="modeSet('ECO',this)">ECO</button>
+<button class="mode" onclick="modeSet('NORMAL',this)">NORMAL</button>
+<button class="mode" onclick="modeSet('SPORT',this)">SPORT</button>
+</div>
+
+<div class="controls">
+<button class="ctrl" onclick="accel()">ACCEL</button>
+<button class="ctrl" onclick="brake()">BRAKE</button>
+<button class="ctrl" onclick="resetAll()">RESET</button>
+</div>
+
+</section>
+
+
+<section class="card">
+<h2>🔋 Advanced BMS</h2>
+
+<div style="font-size:37px;font-weight:300">
+<span id="soc">82</span>%
+</div>
+
+<div style="color:#777;font-size:11px">
+SOC • SOH <b class="green">98%</b>
+</div>
+
+<div class="bar">
+<i id="bbar"></i>
+</div>
+
+<div class="rows" style="margin-top:8px">
+
+<div class="row">
+<span>Pack Voltage</span>
+<b id="pack">393.6 V</b>
+</div>
+
+<div class="row">
+<span>Pack Current</span>
+<b id="current">0 A</b>
+</div>
+
+<div class="row">
+<span>Cell Min</span>
+<b id="mincell">3.91 V</b>
+</div>
+
+<div class="row">
+<span>Cell Max</span>
+<b id="maxcell">4.08 V</b>
+</div>
+
+<div class="row">
+<span>Imbalance</span>
+<b id="delta">0.17 V</b>
+</div>
+
+</div>
+
+<div class="cells" id="cells"></div>
+
+</section>
+
+
+<section class="card">
+
+<h2>⚡ Motor Controller</h2>
+
+<div class="stats">
+
+<div class="stat">
+<label>RPM</label>
+<strong id="rpm">0</strong>
+</div>
+
+<div class="stat">
+<label>Torque</label>
+<strong id="torque">0 Nm</strong>
+</div>
+
+<div class="stat">
+<label>Power</label>
+<strong id="power">0 kW</strong>
+</div>
+
+<div class="stat">
+<label>Efficiency</label>
+<strong class="green" id="eff">96%</strong>
+</div>
+
+</div>
+
+<div class="rows" style="margin-top:10px">
+
+<div class="row">
+<span>Peak Power</span>
+<b id="peakP">0 kW</b>
+</div>
+
+<div class="row">
+<span>Peak Torque</span>
+<b id="peakT">0 Nm</b>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🌡️ Thermal Management</h2>
+
+<div class="thermal">
+
+<div>
+<div class="temp">
+<span>Battery</span>
+<b id="bt">29°C</b>
+</div>
+<div class="tempbar">
+<i id="bb"></i>
+</div>
+</div>
+
+<div>
+<div class="temp">
+<span>Motor</span>
+<b id="mt">32°C</b>
+</div>
+<div class="tempbar">
+<i id="mb"></i>
+</div>
+</div>
+
+<div>
+<div class="temp">
+<span>Inverter</span>
+<b id="it">31°C</b>
+</div>
+<div class="tempbar">
+<i id="ib"></i>
+</div>
+</div>
+
+</div>
+
+<div class="row" style="margin-top:12px">
+<span>Cooling system</span>
+<b class="green" id="cool">LOW</b>
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🚦 Traffic Signal</h2>
+
+<div class="signal">
+
+<div class="light">
+<i class="red on" id="sr"></i>
+<i class="yellow" id="sy"></i>
+<i class="green" id="sg"></i>
+</div>
+
+<div>
+<strong id="signalText">RED</strong>
+
+<div style="color:#777;font-size:11px;margin-top:5px">
+AI traffic control
+</div>
+
+<div style="color:#777;font-size:11px">
+Distance: <b id="signalDist">85 m</b>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🤖 AI Autopilot</h2>
+
+<div class="ai">
+
+<div class="aiinfo">
+CAMERA • RADAR • OBJECT DETECTION
+</div>
+
+<div class="airoad"></div>
+<div class="lane la"></div>
+<div class="lane lb"></div>
+<div class="obj"></div>
+
+</div>
+
+<div class="toggleline">
+<span>Autopilot</span>
+<div class="toggle" id="auto" onclick="toggle('auto')">
+<i></i>
+</div>
+</div>
+
+<div class="toggleline">
+<span>Lane Assist</span>
+<div class="toggle on">
+<i></i>
+</div>
+</div>
+
+<div class="toggleline">
+<span>Auto Emergency Brake</span>
+<div class="toggle on">
+<i></i>
+</div>
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🚘 Vehicle Security</h2>
+
+<div class="security">
+
+<button onclick="lockToggle()" id="lock">
+🔒 Vehicle Locked
+</button>
+
+<button onclick="alarmToggle()" id="alarm">
+🚨 Alarm Armed
+</button>
+
+<button onclick="sentryToggle()" id="sentry">
+📷 Sentry Mode ON
+</button>
+
+</div>
+
+<div class="row">
+<span>Vehicle status</span>
+<b class="green" id="securityStatus">SECURE</b>
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🗺️ Navigation</h2>
+
+<div class="map">
+<div class="route"></div>
+<div class="pin"></div>
+</div>
+
+<div class="stats" style="margin-top:10px">
+
+<div class="stat">
+<label>Destination</label>
+<strong style="font-size:14px">HOME</strong>
+</div>
+
+<div class="stat">
+<label>ETA</label>
+<strong id="eta">18 min</strong>
+</div>
+
+</div>
+
+</section>
+
+
+<section class="card wide">
+
+<h2>📊 Live Engineering Telemetry</h2>
+
+<canvas class="graph" id="graph"></canvas>
+
+<div style="display:flex;gap:15px;color:#777;font-size:10px;margin-top:7px">
+<span>■ Power</span>
+<span>■ Speed</span>
+<span>■ Battery Temperature</span>
+</div>
+
+</section>
+
+
+<section class="card">
+
+<h2>🧪 Engineering Test Center</h2>
+
+<div class="stats">
+
+<div class="stat">
+<label>0–100</label>
+<strong id="zero">--</strong>
+</div>
+
+<div class="stat">
+<label>Peak Speed</label>
+<strong id="peakSpeed">0</strong>
+</div>
+
+<div class="stat">
+<label>Energy</label>
+<strong id="energy">0.00 kWh</strong>
+</div>
+
+<div class="stat">
+<label>Trip</label>
+<strong id="trip">0.00 km</strong>
+</div>
+
+</div>
+
+<button class="testbtn" onclick="test100()">
+RUN 0–100 TEST
+</button>
+
+<button class="testbtn" onclick="brakeTest()">
+RUN BRAKING TEST
+</button>
+
+</section>
+
+
+<section class="card">
+
+<h2>🔌 Charging & Energy</h2>
+
+<div class="stats">
+
+<div class="stat">
+<label>Battery</label>
+<strong id="chargeSoc">82%</strong>
+</div>
+
+<div class="stat">
+<label>Charge Power</label>
+<strong id="chargePower">0 kW</strong>
+</div>
+
+<div class="stat">
+<label>Consumption</label>
+<strong id="cons">0.0</strong>
+</div>
+
+<div class="stat">
+<label>Regeneration</label>
+<strong class="green" id="regen">0.0 kW</strong>
+</div>
+
+</div>
+
+<button class="testbtn" onclick="chargeToggle()" id="chargeBtn">
+START CHARGING
+</button>
+
+</section>
+
+</main>
+
+<div class="footer">
+EV Engineering Simulation • Educational dashboard • Not a real vehicle control system
+</div>
+
+<nav class="bottom">
+
+<button>🚗<br>Vehicle</button>
+<button>⚡<br>Energy</button>
+<button>🤖<br>Autopilot</button>
+<button>🗺️<br>Map</button>
+<button>⚙️<br>System</button>
+
+</nav>
+
+</div>
+
+
+<script>
+
+/* LOGIN */
+
+const LOGIN_NAME="Abhishek";
+const LOGIN_PASSWORD="1234";
+
+function login(){
+
+let name=$("loginName").value.trim();
+let password=$("loginPassword").value;
+
+if(name===LOGIN_NAME && password===LOGIN_PASSWORD){
+
+localStorage.setItem("evLoggedIn","true");
+
+$("loginScreen").style.display="none";
+$("mainApp").style.display="block";
+
+}else{
+
+$("loginError").textContent="Wrong name or password";
+
+}
+
+}
+
+function logout(){
+
+localStorage.removeItem("evLoggedIn");
+
+$("mainApp").style.display="none";
+$("loginScreen").style.display="flex";
+
+$("loginName").value="";
+$("loginPassword").value="";
+$("loginError").textContent="";
+
+}
+
+function checkLogin(){
+
+if(localStorage.getItem("evLoggedIn")==="true"){
+
+$("loginScreen").style.display="none";
+$("mainApp").style.display="block";
+
+}
+
+}
+
+
+/* DASHBOARD */
+
+let speed=0,soc=82,trip=0,energy=0,mode="ECO";
+let autopilot=false,locked=true,alarm=true,sentry=true,charging=false;
+
+let bt=29,mt=32,it=31;
+let peakP=0,peakT=0,peakS=0;
+let signal=0,signalDist=85;
+
+let pHist=[],sHist=[],tHist=[];
+
+const $=id=>document.getElementById(id);
+
+
+for(let i=0;i<40;i++){
+
+let c=document.createElement("div");
+
+c.className="cell";
+
+$("cells").appendChild(c);
+
+}
+
+
+function modeSet(m,b){
+
+mode=m;
+
+document.querySelectorAll(".mode").forEach(x=>x.classList.remove("active"));
+
+b.classList.add("active");
+
+}
+
+
+function accel(){
+
+if(locked||charging)return;
+
+let a=mode==="ECO"?2.5:mode==="NORMAL"?4:6;
+
+if(bt<10)a*=.5;
+if(bt>48)a*=.7;
+if(mt>85)a*=.6;
+
+speed=Math.min(250,speed+a);
+
+}
+
+
+function brake(){
+
+if(charging)return;
+
+let old=speed;
+
+speed=Math.max(0,speed-15);
+
+if(old>speed){
+
+$("regen").textContent=((old-speed)*.08).toFixed(1)+" kW";
+
+}
+
+}
+
+
+function resetAll(){
+
+speed=0;
+trip=0;
+energy=0;
+peakP=0;
+peakT=0;
+peakS=0;
+
+$("zero").textContent="--";
+
+}
+
+
+function toggle(type){
+
+if(type==="auto"){
+
+if(locked)return;
+
+autopilot=!autopilot;
+
+$("auto").classList.toggle("on",autopilot);
+
+}
+
+}
+
+
+function lockToggle(){
+
+if(speed>0)return;
+
+locked=!locked;
+
+$("lock").textContent=locked?"🔒 Vehicle Locked":"🔓 Vehicle Unlocked";
+
+$("securityStatus").textContent=locked?"SECURE":"UNLOCKED";
+
+}
+
+
+function alarmToggle(){
+
+alarm=!alarm;
+
+$("alarm").textContent=alarm?"🚨 Alarm Armed":"🔕 Alarm Disarmed";
+
+}
+
+
+function sentryToggle(){
+
+sentry=!sentry;
+
+$("sentry").textContent=sentry?"📷 Sentry Mode ON":"📷 Sentry Mode OFF";
+
+}
+
+
+function chargeToggle(){
+
+if(speed>0)return;
+
+charging=!charging;
+
+$("chargeBtn").textContent=charging?"STOP CHARGING":"START CHARGING";
+
+}
+
+
+function motorData(){
+
+let torque=speed<30?420:speed<80?370:speed<150?280:180;
+
+if(mode==="ECO")torque*=.72;
+
+if(mode==="SPORT")torque*=1.08;
+
+let rpm=Math.round(speed*78);
+
+let power=Math.min(250,Math.max(0,torque*rpm/9550));
+
+return{torque,rpm,power};
+
+}
+
+
+function thermal(){
+
+let load=speed/250;
+
+if(speed>0){
+
+mt+=load*.055;
+bt+=load*.018;
+it+=load*.04;
+
+}else{
+
+mt-=.03;
+bt-=.008;
+it-=.02;
+
+}
+
+bt=Math.max(20,Math.min(55,bt));
+mt=Math.max(25,Math.min(95,mt));
+it=Math.max(25,Math.min(80,it));
+
+$("bt").textContent=bt.toFixed(1)+"°C";
+$("mt").textContent=mt.toFixed(1)+"°C";
+$("it").textContent=it.toFixed(1)+"°C";
+
+$("bb").style.width=((bt-20)/35*100)+"%";
+$("mb").style.width=((mt-25)/70*100)+"%";
+$("ib").style.width=((it-25)/55*100)+"%";
+
+$("cool").textContent=mt>75?"HIGH":mt>55?"MEDIUM":"LOW";
+
+}
+
+
+function bms(){
+
+let min=3.88+Math.random()*.05;
+let max=4.02+Math.random()*.06;
+
+let pack=soc/100*480;
+
+$("pack").textContent=pack.toFixed(1)+" V";
+$("mincell").textContent=min.toFixed(2)+" V";
+$("maxcell").textContent=max.toFixed(2)+" V";
+$("delta").textContent=(max-min).toFixed(2)+" V";
+
+$("soc").textContent=soc.toFixed(1);
+$("chargeSoc").textContent=soc.toFixed(1)+"%";
+
+$("bbar").style.width=soc+"%";
+
+
+document.querySelectorAll(".cell").forEach(c=>{
+
+let r=Math.random();
+
+c.className="cell "+(r>.98?"b":r>.9?"w":"");
+
+});
+
+}
+
+
+function traffic(){
+
+signal++;
+
+if(signal>100)signal=0;
+
+
+if(signal<55){
+
+$("sr").classList.add("on");
+$("sy").classList.remove("on");
+$("sg").classList.remove("on");
+
+$("signalText").textContent="RED";
+
+}else if(signal<70){
+
+$("sr").classList.remove("on");
+$("sy").classList.add("on");
+$("sg").classList.remove("on");
+
+$("signalText").textContent="YELLOW";
+
+}else{
+
+$("sr").classList.remove("on");
+$("sy").classList.remove("on");
+$("sg").classList.add("on");
+
+$("signalText").textContent="GREEN";
+
+}
+
+
+signalDist=80+Math.sin(Date.now()/2000)*30;
+
+$("signalDist").textContent=Math.round(signalDist)+" m";
+
+}
+
+
+function autopilotDrive(){
+
+if(!autopilot||locked||charging)return;
+
+let green=signal>=70;
+let target=75;
+
+if(signalDist<35&&!green)target=0;
+else if(signalDist<60&&!green)target=25;
+
+if(speed<target)speed+=1.1;
+if(speed>target)speed-=1.4;
+
+if(speed<0)speed=0;
+
+}
+
+
+function update(){
+
+autopilotDrive();
+
+let m=motorData();
+
+
+if(charging){
+
+soc=Math.min(100,soc+.025);
+
+if(soc>=100)charging=false;
+
+}else if(speed>0){
+
+let drain=.000012*m.power;
+
+soc=Math.max(0,soc-drain);
+
+energy+=m.power/3600000;
+
+trip+=speed/360000;
+
+}
+
+
+thermal();
+bms();
+traffic();
+
+
+$("speed").textContent=Math.round(speed);
+
+$("rpm").textContent=m.rpm;
+
+$("torque").textContent=Math.round(m.torque)+" Nm";
+
+$("power").textContent=m.power.toFixed(1)+" kW";
+
+$("current").textContent=Math.round(m.power*2.55)+" A";
+
+
+peakP=Math.max(peakP,m.power);
+peakT=Math.max(peakT,m.torque);
+peakS=Math.max(peakS,speed);
+
+
+$("peakP").textContent=peakP.toFixed(1)+" kW";
+
+$("peakT").textContent=Math.round(peakT)+" Nm";
+
+$("peakSpeed").textContent=Math.round(peakS)+" km/h";
+
+$("energy").textContent=energy.toFixed(2)+" kWh";
+
+$("trip").textContent=trip.toFixed(2)+" km";
+
+$("cons").textContent=trip?(energy/trip*100).toFixed(1):"0.0";
+
+$("chargeSoc").textContent=soc.toFixed(1)+"%";
+
+$("chargePower").textContent=charging?"11 kW":"0 kW";
+
+
+$("car").style.transform=
+`translateX(${Math.sin(Date.now()/160)*3}px)`;
+
+
+pHist.push(m.power);
+sHist.push(speed);
+tHist.push(bt);
+
+
+if(pHist.length>70){
+
+pHist.shift();
+sHist.shift();
+tHist.shift();
+
+}
+
+
+drawGraph();
+
+}
+
+
+function drawGraph(){
+
+let c=$("graph");
+let ctx=c.getContext("2d");
+
+let r=c.getBoundingClientRect();
+let dpr=devicePixelRatio||1;
+
+if(c.width!==r.width*dpr){
+
+c.width=r.width*dpr;
+c.height=r.height*dpr;
+
+}
+
+ctx.setTransform(dpr,0,0,dpr,0,0);
+
+let w=r.width,h=r.height;
+
+ctx.clearRect(0,0,w,h);
+
+ctx.strokeStyle="#20242a";
+ctx.lineWidth=1;
+
+
+for(let i=0;i<6;i++){
+
+let y=i*h/5;
+
+ctx.beginPath();
+ctx.moveTo(0,y);
+ctx.lineTo(w,y);
+ctx.stroke();
+
+}
+
+
+line(pHist,250,"#ff4b50");
+line(sHist,250,"#52a9ff");
+line(tHist,100,"#ffc84a");
+
+
+function line(a,max,col){
+
+if(a.length<2)return;
+
+ctx.beginPath();
+
+a.forEach((v,i)=>{
+
+let x=i/(a.length-1)*w;
+let y=h-((v/max)*h*.9)-5;
+
+i?ctx.lineTo(x,y):ctx.moveTo(x,y);
+
+});
+
+ctx.strokeStyle=col;
+ctx.lineWidth=2;
+ctx.stroke();
+
+}
+
+}
+
+
+function test100(){
+
+if(locked||charging)return;
+
+speed=0;
+
+let start=performance.now();
+
+let timer=setInterval(()=>{
+
+speed+=5;
+
+if(speed>=100){
+
+speed=100;
+
+$("zero").textContent=
+((performance.now()-start)/1000).toFixed(2)+" s";
+
+clearInterval(timer);
+
+}
+
+},70);
+
+}
+
+
+function brakeTest(){
+
+if(locked||speed<50)return;
+
+let t=performance.now();
+
+let timer=setInterval(()=>{
+
+speed-=8;
+
+if(speed<=0){
+
+speed=0;
+
+$("zero").textContent=
+"Braking: "+((performance.now()-t)/1000).toFixed(2)+" s";
+
+clearInterval(timer);
+
+}
+
+},70);
+
+}
+
+
+/* ENTER KEY LOGIN */
+
+$("loginPassword").addEventListener("keydown",function(e){
+
+if(e.key==="Enter")login();
+
+});
+
+
+checkLogin();
+
+
+/* PWA */
+
+if("serviceWorker" in navigator){
+
+window.addEventListener("load",()=>{
+
+navigator.serviceWorker
+.register("service-worker.js")
+.catch(()=>{});
+
+});
+
+}
+
+setInterval(update,100);
+
+</script>
+
+</body>
+</html>
